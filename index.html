@@ -1,0 +1,227 @@
+<!doctype html>
+<html lang="zh-CN">
+  <head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <title>观命 - 每日命盘教练</title>
+    <link rel="stylesheet" href="styles.css" />
+  </head>
+  <body>
+    <canvas id="skyCanvas" aria-hidden="true"></canvas>
+
+    <div class="app-shell">
+      <aside class="sidebar">
+        <div class="brand">
+          <div class="brand-mark">观</div>
+          <div>
+            <p class="brand-name">观命</p>
+            <p class="brand-subtitle">每日命盘教练</p>
+          </div>
+        </div>
+
+        <nav class="nav-tabs" aria-label="主要导航">
+          <button class="nav-tab active" data-tab="today">今日</button>
+          <button class="nav-tab" data-tab="profile">本命</button>
+          <button class="nav-tab" data-tab="coach">教练</button>
+          <button class="nav-tab" data-tab="settings">资料</button>
+        </nav>
+
+        <section class="mini-panel">
+          <p class="label">今日卦象</p>
+          <strong>风火家人</strong>
+          <span>向内安顿，向外有序。</span>
+        </section>
+      </aside>
+
+      <main class="main">
+        <section class="topbar">
+          <div>
+            <p class="eyebrow">癸未日 · 申时将近</p>
+            <h1>今日先稳住内在秩序</h1>
+          </div>
+          <button class="ghost-button" id="refreshBtn" type="button">换一句</button>
+        </section>
+
+        <section class="view active" id="today">
+          <div class="daily-grid">
+            <article class="quote-panel">
+              <p class="label">每日一句</p>
+              <h2 id="dailyQuote">真正的顺势，不是等待命运安排，而是看懂自己此刻该用哪一种力。</h2>
+              <p class="muted">今日适合把复杂的念头收束成一个可以执行的小决定。</p>
+            </article>
+
+            <article class="chart-panel">
+              <div class="panel-head">
+                <div>
+                  <p class="label">命盘能量图</p>
+                  <h2>今日五维</h2>
+                </div>
+                <span class="seal">MING</span>
+              </div>
+              <div class="compass">
+                <div class="ring ring-a"></div>
+                <div class="ring ring-b"></div>
+                <div class="axis axis-x"></div>
+                <div class="axis axis-y"></div>
+                <div class="needle"></div>
+                <span class="star s1"></span>
+                <span class="star s2"></span>
+                <span class="star s3"></span>
+                <span class="compass-label north">心</span>
+                <span class="compass-label east">财</span>
+                <span class="compass-label south">身</span>
+                <span class="compass-label west">业</span>
+              </div>
+              <div class="energy-list">
+                <div><span>事业</span><b style="--w: 72%"></b><em>72</em></div>
+                <div><span>关系</span><b style="--w: 58%"></b><em>58</em></div>
+                <div><span>财务</span><b style="--w: 64%"></b><em>64</em></div>
+                <div><span>情绪</span><b style="--w: 46%"></b><em>46</em></div>
+              </div>
+            </article>
+
+            <article class="fortune-panel">
+              <p class="label">今日运势</p>
+              <div class="fortune-score">
+                <span>78</span>
+                <small>宜守中有进</small>
+              </div>
+              <div class="advice-columns">
+                <div>
+                  <p>今日适合</p>
+                  <strong>复盘、整理、低调推进</strong>
+                </div>
+                <div>
+                  <p>今日不宜</p>
+                  <strong>冲动承诺、情绪化表达</strong>
+                </div>
+              </div>
+            </article>
+          </div>
+
+          <div class="insight-band">
+            <article>
+              <p class="label">事业提醒</p>
+              <h3>先把判断写下来，再和人讨论。</h3>
+              <p>今日容易被他人的急迫感带动。你需要的是清楚边界，而不是更快答应。</p>
+            </article>
+            <article>
+              <p class="label">关系提醒</p>
+              <h3>别把试探包装成体贴。</h3>
+              <p>如果你想确认关系温度，直接表达需求会比暗中观察更省力。</p>
+            </article>
+            <article>
+              <p class="label">今日行动</p>
+              <h3>完成一个十五分钟复盘。</h3>
+              <p>写下一个最近反复消耗你的问题，并标出你能控制的一步。</p>
+            </article>
+          </div>
+        </section>
+
+        <section class="view" id="profile">
+          <div class="section-head">
+            <p class="eyebrow">本命分析</p>
+            <h2>你的命盘人格原型</h2>
+          </div>
+
+          <div class="profile-layout">
+            <article class="archetype-panel">
+              <p class="label">原型</p>
+              <h2>静水谋局者</h2>
+              <p>你的底层力量不是外放的冲锋，而是长期观察、判断时机、整合资源。你真正的运势来自稳定输出，而不是临时爆发。</p>
+            </article>
+            <div class="profile-list">
+              <article>
+                <span>核心驱动力</span>
+                <strong>建立可控的内在秩序</strong>
+                <p>当生活缺乏结构时，你会明显焦躁；当目标被拆清楚，你的执行力会自然回来。</p>
+              </article>
+              <article>
+                <span>天赋资源</span>
+                <strong>洞察人心与局势变化</strong>
+                <p>你适合处理复杂信息、判断关系里的暗线，并把混乱转成策略。</p>
+              </article>
+              <article>
+                <span>消耗模式</span>
+                <strong>过度推演尚未发生的事</strong>
+                <p>你容易在决定前消耗太多精神，像提前活过很多个坏结果。</p>
+              </article>
+              <article>
+                <span>修行课题</span>
+                <strong>用行动校准直觉</strong>
+                <p>不是每件事都要想透才开始。有些答案只会在推进中出现。</p>
+              </article>
+            </div>
+          </div>
+        </section>
+
+        <section class="view" id="coach">
+          <div class="section-head">
+            <p class="eyebrow">AI 命盘教练</p>
+            <h2>把问题交给你的命盘结构</h2>
+          </div>
+
+          <div class="coach-layout">
+            <div class="prompt-bank">
+              <button type="button">我为什么总是内耗？</button>
+              <button type="button">我适合做什么事业方向？</button>
+              <button type="button">我最近该主动还是保守？</button>
+              <button type="button">我如何改善亲密关系？</button>
+            </div>
+            <article class="chat-panel">
+              <div class="message assistant">
+                <span>观命</span>
+                <p>你现在问的问题，不只看事件本身，也要看它触发了你命盘里的哪一种惯性。先说出你最想判断的选择。</p>
+              </div>
+              <div class="input-row">
+                <input id="coachInput" type="text" placeholder="输入你的问题，例如：我今年适合换工作吗？" />
+                <button id="coachSend" type="button">问</button>
+              </div>
+              <div class="message user hidden" id="userQuestion">
+                <span>你</span>
+                <p></p>
+              </div>
+              <div class="message assistant hidden" id="coachAnswer">
+                <span>观命</span>
+                <p></p>
+              </div>
+            </article>
+          </div>
+        </section>
+
+        <section class="view" id="settings">
+          <div class="section-head">
+            <p class="eyebrow">出生资料</p>
+            <h2>建立你的命盘底座</h2>
+          </div>
+
+          <form class="birth-form">
+            <label>
+              出生日期
+              <input type="date" value="1996-08-18" />
+            </label>
+            <label>
+              出生时间
+              <input type="time" value="08:36" />
+            </label>
+            <label>
+              出生地点
+              <input type="text" value="上海，中国" />
+            </label>
+            <label>
+              性别
+              <select>
+                <option>女</option>
+                <option>男</option>
+                <option>不便透露</option>
+              </select>
+            </label>
+            <button type="button">生成 AI 报告原型</button>
+          </form>
+        </section>
+      </main>
+    </div>
+
+    <script src="app.js"></script>
+  </body>
+</html>
