@@ -6,10 +6,35 @@
     <title>观命 - 每日命盘教练</title>
     <link rel="stylesheet" href="styles.css" />
   </head>
-  <body>
+  <body class="locked">
     <canvas id="skyCanvas" aria-hidden="true"></canvas>
 
-    <div class="app-shell">
+    <section class="book-gate" id="bookGate" aria-label="观命首页">
+      <div class="gate-copy">
+        <p class="eyebrow">紫微 · 八字 · AI 人生教练</p>
+        <h1>观命</h1>
+        <p>翻开你的命书，看见今日之势，也看见自己真正的运行方式。</p>
+      </div>
+
+      <button class="mystic-book" id="openBook" type="button" aria-label="打开观命">
+        <span class="book-page left-page">
+          <i>观</i>
+        </span>
+        <span class="book-page right-page">
+          <i>命</i>
+        </span>
+        <span class="book-cover">
+          <span class="cover-frame"></span>
+          <span class="cover-title">玄学之术</span>
+          <span class="cover-subtitle">命盘自明 · 万象有序</span>
+          <span class="cover-mark">观</span>
+        </span>
+      </button>
+
+      <div class="gate-hint">点击命书，开卷观命</div>
+    </section>
+
+    <div class="app-shell" id="appShell" aria-hidden="true">
       <aside class="sidebar">
         <div class="brand">
           <div class="brand-mark">观</div>

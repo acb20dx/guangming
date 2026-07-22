@@ -7,6 +7,9 @@ const coachInput = document.querySelector("#coachInput");
 const coachSend = document.querySelector("#coachSend");
 const userQuestion = document.querySelector("#userQuestion");
 const coachAnswer = document.querySelector("#coachAnswer");
+const bookGate = document.querySelector("#bookGate");
+const openBook = document.querySelector("#openBook");
+const appShell = document.querySelector("#appShell");
 
 const quotes = [
   "真正的顺势，不是等待命运安排，而是看懂自己此刻该用哪一种力。",
@@ -15,6 +18,19 @@ const quotes = [
   "越是想快速确定答案，越要给判断留一夜的时间。",
   "命盘不是限制你的边界，而是提醒你哪条路更省力。"
 ];
+
+function enterApp() {
+  openBook.classList.add("is-opening");
+
+  window.setTimeout(() => {
+    bookGate.classList.add("opened");
+    appShell.classList.add("ready");
+    appShell.removeAttribute("aria-hidden");
+    document.body.classList.remove("locked");
+  }, 640);
+}
+
+openBook.addEventListener("click", enterApp);
 
 tabs.forEach((tab) => {
   tab.addEventListener("click", () => {
