@@ -967,6 +967,22 @@ h1 {
   box-shadow: inset 0 0 40px rgba(215, 181, 109, 0.08);
 }
 
+.astro-svg-mount {
+  width: min(70vw, 320px);
+  aspect-ratio: 1;
+  overflow: hidden;
+  border: 1px solid rgba(215, 181, 109, 0.32);
+  border-radius: 50%;
+  background: rgba(7, 7, 6, 0.7);
+  box-shadow: inset 0 0 38px rgba(215, 181, 109, 0.08);
+}
+
+.astro-svg-mount svg {
+  width: 100%;
+  height: 100%;
+  display: block;
+}
+
 .astro-wheel::before,
 .astro-wheel::after,
 .astro-wheel i {

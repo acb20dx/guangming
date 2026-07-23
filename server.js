@@ -162,7 +162,8 @@ function summarizeApiWorks(profile, raw) {
       sun: findPlanetSign(astroRaw, ["Sun", "太阳", "0"]),
       moon: findPlanetSign(astroRaw, ["Moon", "月亮", "1"]),
       ascendant: findPlanetSign(astroRaw, ["ASC", "Asc", "上升", "10"]) || findAscendantFromHouse(astroRaw),
-      rawState: astroRaw ? "已返回" : "未返回"
+      rawState: astroRaw ? "已返回" : "未返回",
+      svg: typeof astroRaw?.svg === "string" ? astroRaw.svg : null
     },
     synthesis: {
       title: astroRaw || baziRaw || ziweiRaw ? "真实排盘已接入，等待解释层映射" : mock.synthesis.title,

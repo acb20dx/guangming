@@ -29,6 +29,8 @@ const baziDetail = document.querySelector("#baziDetail");
 const astroCore = document.querySelector("#astroCore");
 const astroDetail = document.querySelector("#astroDetail");
 const astroChartTitle = document.querySelector("#astroChartTitle");
+const astroWheel = document.querySelector(".astro-wheel");
+const astroSvgMount = document.querySelector("#astroSvgMount");
 const sunSign = document.querySelector("#sunSign");
 const moonSign = document.querySelector("#moonSign");
 const ascSign = document.querySelector("#ascSign");
@@ -113,6 +115,7 @@ function renderChart(chart) {
   astroCore.textContent = chart.astro.core;
   astroDetail.textContent = chart.astro.detail;
   astroChartTitle.textContent = chart.provider === "apiworks" ? "星盘 API 已返回" : "星盘原型盘面";
+  renderAstroSvg(chart.astro.svg);
   sunSign.textContent = chart.astro.sun || "待映射";
   moonSign.textContent = chart.astro.moon || "待映射";
   ascSign.textContent = chart.astro.ascendant || "待映射";
@@ -120,6 +123,14 @@ function renderChart(chart) {
   synthesisTitle.textContent = chart.synthesis.title;
   synthesisText.textContent = chart.synthesis.text;
   activateTab("charts");
+}
+
+function renderAstroSvg(svg) {
+  const hasSafeSvg = typeof svg === "string" && svg.trim().startsWith("<svg") && !/<script/i.test(svg);
+
+  astroSvgMount.classList.toggle("hidden", !hasSafeSvg);
+  astroWheel.classList.toggle("hidden", hasSafeSvg);
+  astroSvgMount.innerHTML = hasSafeSvg ? svg : "";
 }
 
 function fillSelect(select, values, selectedValue) {
