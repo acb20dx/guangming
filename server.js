@@ -179,14 +179,16 @@ async function handleApi(req, res) {
     return;
   }
 
+  let profile = null;
+
   try {
-    const profile = await readJsonBody(req);
+    profile = await readJsonBody(req);
     const chartBundle = await generateChartBundle(profile);
     sendJson(res, 200, chartBundle);
   } catch (error) {
     sendJson(res, 500, {
       error: error.message,
-      fallback: buildMockChart({
+      fallback: buildMockChart(profile || {
         birthDate: "未填写日期",
         birthTime: "未填写时间",
         birthPlace: "未知地点",
