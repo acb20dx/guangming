@@ -11,7 +11,9 @@ const bookGate = document.querySelector("#bookGate");
 const openBook = document.querySelector("#openBook");
 const appShell = document.querySelector("#appShell");
 const generateReport = document.querySelector("#generateReport");
-const birthDate = document.querySelector("#birthDate");
+const birthYear = document.querySelector("#birthYear");
+const birthMonth = document.querySelector("#birthMonth");
+const birthDay = document.querySelector("#birthDay");
 const birthTime = document.querySelector("#birthTime");
 const birthPlace = document.querySelector("#birthPlace");
 const birthTimezone = document.querySelector("#birthTimezone");
@@ -26,6 +28,11 @@ const baziCore = document.querySelector("#baziCore");
 const baziDetail = document.querySelector("#baziDetail");
 const astroCore = document.querySelector("#astroCore");
 const astroDetail = document.querySelector("#astroDetail");
+const astroChartTitle = document.querySelector("#astroChartTitle");
+const sunSign = document.querySelector("#sunSign");
+const moonSign = document.querySelector("#moonSign");
+const ascSign = document.querySelector("#ascSign");
+const astroRawState = document.querySelector("#astroRawState");
 const synthesisTitle = document.querySelector("#synthesisTitle");
 const synthesisText = document.querySelector("#synthesisText");
 
@@ -68,7 +75,11 @@ function buildMockChart(profile) {
     },
     astro: {
       core: "月亮需求：稳定回应 · 金星偏慢热",
-      detail: "星盘先作为辅助心理层，重点服务关系模式与合盘。后续会加入太阳、月亮、上升、金星、火星、七宫与相位。"
+      detail: "星盘先作为辅助心理层，重点服务关系模式与合盘。后续会加入太阳、月亮、上升、金星、火星、七宫与相位。",
+      sun: "狮子座",
+      moon: "金牛座",
+      ascendant: "天秤座",
+      rawState: "mock"
     },
     synthesis: {
       title: "三盘共同主题：先安内在，再向外推进",
@@ -78,10 +89,13 @@ function buildMockChart(profile) {
 }
 
 function getBirthProfile() {
+  const month = String(birthMonth.value).padStart(2, "0");
+  const day = String(birthDay.value).padStart(2, "0");
+
   return {
-    birthDate: birthDate.value || "未填写日期",
+    birthDate: `${birthYear.value}-${month}-${day}`,
     birthTime: birthTime.value || "未填写时间",
-    birthPlace: birthPlace.value.trim() || "未填写地点",
+    birthPlace: birthPlace.value || "未填写地点",
     timezone: Number(birthTimezone.value || 8),
     longitude: Number(birthLongitude.value || 121.4737),
     latitude: Number(birthLatitude.value || 31.2304),
@@ -98,9 +112,63 @@ function renderChart(chart) {
   baziDetail.textContent = chart.bazi.detail;
   astroCore.textContent = chart.astro.core;
   astroDetail.textContent = chart.astro.detail;
+  astroChartTitle.textContent = chart.provider === "apiworks" ? "星盘 API 已返回" : "星盘原型盘面";
+  sunSign.textContent = chart.astro.sun || "待映射";
+  moonSign.textContent = chart.astro.moon || "待映射";
+  ascSign.textContent = chart.astro.ascendant || "待映射";
+  astroRawState.textContent = chart.astro.rawState || (chart.raw?.astro ? "已返回" : "未返回");
   synthesisTitle.textContent = chart.synthesis.title;
   synthesisText.textContent = chart.synthesis.text;
   activateTab("charts");
+}
+
+function fillSelect(select, values, selectedValue) {
+  select.innerHTML = "";
+  values.forEach((value) => {
+    const option = document.createElement("option");
+    option.value = String(value);
+    option.textContent = String(value);
+    if (String(value) === String(selectedValue)) option.selected = true;
+    select.appendChild(option);
+  });
+}
+
+function daysInMonth(year, month) {
+  return new Date(Number(year), Number(month), 0).getDate();
+}
+
+function populateBirthDateSelects() {
+  const currentYear = new Date().getFullYear();
+  fillSelect(
+    birthYear,
+    Array.from({ length: 101 }, (_, index) => currentYear - index),
+    1996
+  );
+  fillSelect(
+    birthMonth,
+    Array.from({ length: 12 }, (_, index) => index + 1),
+    8
+  );
+  updateBirthDays(18);
+}
+
+function updateBirthDays(selectedDay = birthDay.value || 1) {
+  const dayCount = daysInMonth(birthYear.value, birthMonth.value);
+  const safeDay = Math.min(Number(selectedDay), dayCount);
+  fillSelect(
+    birthDay,
+    Array.from({ length: dayCount }, (_, index) => index + 1),
+    safeDay
+  );
+}
+
+function syncPlaceMeta() {
+  const selected = birthPlace.selectedOptions[0];
+  if (!selected) return;
+
+  birthTimezone.value = selected.dataset.timezone || 8;
+  birthLongitude.value = selected.dataset.longitude || 121.4737;
+  birthLatitude.value = selected.dataset.latitude || 31.2304;
 }
 
 async function generatePrototypeReport() {
@@ -178,6 +246,11 @@ coachInput.addEventListener("keydown", (event) => {
   if (event.key === "Enter") answerQuestion();
 });
 generateReport.addEventListener("click", generatePrototypeReport);
+birthYear.addEventListener("change", () => updateBirthDays());
+birthMonth.addEventListener("change", () => updateBirthDays());
+birthPlace.addEventListener("change", syncPlaceMeta);
+populateBirthDateSelects();
+syncPlaceMeta();
 
 const canvas = document.querySelector("#skyCanvas");
 const ctx = canvas.getContext("2d");

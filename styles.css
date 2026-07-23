@@ -522,6 +522,7 @@ p {
 .birth-form,
 .chart-source,
 .chart-cards article,
+.astro-panel,
 .synthesis-panel {
   border: 1px solid var(--line);
   border-radius: 8px;
@@ -833,6 +834,7 @@ h1 {
 .birth-form,
 .chart-source,
 .chart-cards article,
+.astro-panel,
 .synthesis-panel {
   padding: 24px;
 }
@@ -933,9 +935,127 @@ h1 {
 }
 
 .chart-cards p,
+.astro-panel p,
 .synthesis-panel p {
   color: var(--muted);
   line-height: 1.75;
+}
+
+.astro-panel {
+  display: grid;
+  grid-template-columns: minmax(180px, 0.7fr) minmax(220px, 320px) minmax(220px, 1fr);
+  align-items: center;
+  gap: 22px;
+  margin-bottom: 18px;
+}
+
+.astro-panel h3 {
+  margin: 12px 0;
+  color: var(--gold);
+}
+
+.astro-wheel {
+  position: relative;
+  width: min(70vw, 280px);
+  aspect-ratio: 1;
+  border: 1px solid rgba(215, 181, 109, 0.42);
+  border-radius: 50%;
+  background:
+    radial-gradient(circle, rgba(215, 181, 109, 0.13) 0 2px, transparent 3px),
+    repeating-conic-gradient(from 0deg, rgba(215, 181, 109, 0.1) 0 1deg, transparent 1deg 30deg),
+    radial-gradient(circle, rgba(103, 180, 154, 0.1), transparent 62%);
+  box-shadow: inset 0 0 40px rgba(215, 181, 109, 0.08);
+}
+
+.astro-wheel::before,
+.astro-wheel::after,
+.astro-wheel i {
+  content: "";
+  position: absolute;
+  border: 1px solid rgba(215, 181, 109, 0.22);
+  border-radius: 50%;
+}
+
+.astro-wheel::before {
+  inset: 14%;
+}
+
+.astro-wheel::after {
+  inset: 31%;
+}
+
+.astro-wheel i {
+  inset: 45%;
+  background: var(--gold);
+  box-shadow: 0 0 20px rgba(215, 181, 109, 0.7);
+}
+
+.house,
+.planet {
+  position: absolute;
+  display: grid;
+  place-items: center;
+  color: var(--muted);
+  font-size: 11px;
+}
+
+.house {
+  width: 22px;
+  height: 22px;
+  transform: translate(-50%, -50%);
+}
+
+.h1 { left: 50%; top: 7%; }
+.h2 { left: 72%; top: 13%; }
+.h3 { left: 88%; top: 29%; }
+.h4 { left: 94%; top: 50%; }
+.h5 { left: 88%; top: 71%; }
+.h6 { left: 72%; top: 87%; }
+.h7 { left: 50%; top: 93%; }
+.h8 { left: 28%; top: 87%; }
+.h9 { left: 12%; top: 71%; }
+.h10 { left: 6%; top: 50%; }
+.h11 { left: 12%; top: 29%; }
+.h12 { left: 28%; top: 13%; }
+
+.planet {
+  width: 28px;
+  height: 28px;
+  border: 1px solid rgba(215, 181, 109, 0.32);
+  border-radius: 50%;
+  background: rgba(7, 7, 6, 0.76);
+  color: var(--gold);
+}
+
+.sun { left: 61%; top: 24%; }
+.moon { left: 31%; top: 34%; color: var(--jade); }
+.venus { left: 68%; top: 64%; color: var(--gold-bright); }
+.mars { left: 38%; top: 70%; color: var(--cinnabar); }
+
+.astro-data {
+  display: grid;
+  gap: 12px;
+}
+
+.astro-data div {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  gap: 14px;
+  padding: 12px 14px;
+  border: 1px solid rgba(215, 181, 109, 0.14);
+  border-radius: 8px;
+  background: rgba(255, 255, 255, 0.03);
+}
+
+.astro-data span {
+  color: var(--muted);
+  font-size: 13px;
+}
+
+.astro-data strong {
+  color: var(--text);
+  font-weight: 500;
 }
 
 .prompt-bank {
@@ -1007,6 +1127,12 @@ select:focus {
   grid-template-columns: repeat(2, minmax(0, 1fr));
   gap: 18px;
   max-width: 840px;
+}
+
+.date-selects {
+  display: grid;
+  grid-template-columns: 1fr 0.75fr 0.75fr;
+  gap: 10px;
 }
 
 .birth-form label {
@@ -1100,6 +1226,7 @@ select:focus {
   .profile-layout,
   .coach-layout,
   .chart-cards,
+  .astro-panel,
   .insight-band {
     grid-template-columns: 1fr;
   }
@@ -1187,6 +1314,7 @@ select:focus {
 
   .birth-form,
   .chart-source,
+  .date-selects,
   .advice-columns {
     grid-template-columns: 1fr;
     flex-direction: column;

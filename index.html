@@ -266,6 +266,38 @@
             </article>
           </div>
 
+          <article class="astro-panel">
+            <div>
+              <p class="label">星盘盘面</p>
+              <h3 id="astroChartTitle">等待星盘 API 返回</h3>
+            </div>
+            <div class="astro-wheel" aria-hidden="true">
+              <span class="house h1">1</span>
+              <span class="house h2">2</span>
+              <span class="house h3">3</span>
+              <span class="house h4">4</span>
+              <span class="house h5">5</span>
+              <span class="house h6">6</span>
+              <span class="house h7">7</span>
+              <span class="house h8">8</span>
+              <span class="house h9">9</span>
+              <span class="house h10">10</span>
+              <span class="house h11">11</span>
+              <span class="house h12">12</span>
+              <b class="planet sun">日</b>
+              <b class="planet moon">月</b>
+              <b class="planet venus">金</b>
+              <b class="planet mars">火</b>
+              <i></i>
+            </div>
+            <div class="astro-data">
+              <div><span>太阳</span><strong id="sunSign">待生成</strong></div>
+              <div><span>月亮</span><strong id="moonSign">待生成</strong></div>
+              <div><span>上升</span><strong id="ascSign">待生成</strong></div>
+              <div><span>原始返回</span><strong id="astroRawState">未连接</strong></div>
+            </div>
+          </article>
+
           <article class="synthesis-panel">
             <p class="label">AI 综合解读</p>
             <h3 id="synthesisTitle">等待命盘底座</h3>
@@ -282,7 +314,11 @@
           <form class="birth-form">
             <label>
               出生日期
-              <input id="birthDate" type="date" value="1996-08-18" />
+              <div class="date-selects">
+                <select id="birthYear" aria-label="出生年份"></select>
+                <select id="birthMonth" aria-label="出生月份"></select>
+                <select id="birthDay" aria-label="出生日期"></select>
+              </div>
             </label>
             <label>
               出生时间
@@ -290,7 +326,18 @@
             </label>
             <label>
               出生地点
-              <input id="birthPlace" type="text" value="上海，中国" />
+              <select id="birthPlace">
+                <option value="上海，中国" data-timezone="8" data-longitude="121.4737" data-latitude="31.2304">上海，中国</option>
+                <option value="北京，中国" data-timezone="8" data-longitude="116.4074" data-latitude="39.9042">北京，中国</option>
+                <option value="广州，中国" data-timezone="8" data-longitude="113.2644" data-latitude="23.1291">广州，中国</option>
+                <option value="深圳，中国" data-timezone="8" data-longitude="114.0579" data-latitude="22.5431">深圳，中国</option>
+                <option value="成都，中国" data-timezone="8" data-longitude="104.0665" data-latitude="30.5728">成都，中国</option>
+                <option value="杭州，中国" data-timezone="8" data-longitude="120.1551" data-latitude="30.2741">杭州，中国</option>
+                <option value="纽约，美国" data-timezone="-5" data-longitude="-74.0060" data-latitude="40.7128">纽约，美国</option>
+                <option value="洛杉矶，美国" data-timezone="-8" data-longitude="-118.2437" data-latitude="34.0522">洛杉矶，美国</option>
+                <option value="伦敦，英国" data-timezone="0" data-longitude="-0.1276" data-latitude="51.5072">伦敦，英国</option>
+                <option value="东京，日本" data-timezone="9" data-longitude="139.6917" data-latitude="35.6895">东京，日本</option>
+              </select>
             </label>
             <label>
               时区

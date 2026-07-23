@@ -76,7 +76,11 @@ function buildMockChart(profile) {
     },
     astro: {
       core: "月亮需求：稳定回应 · 金星偏慢热",
-      detail: "星盘先作为辅助心理层，重点服务关系模式与合盘。后续会加入太阳、月亮、上升、金星、火星、七宫与相位。"
+      detail: "星盘先作为辅助心理层，重点服务关系模式与合盘。后续会加入太阳、月亮、上升、金星、火星、七宫与相位。",
+      sun: "狮子座",
+      moon: "金牛座",
+      ascendant: "天秤座",
+      rawState: "mock"
     },
     synthesis: {
       title: "三盘共同主题：先安内在，再向外推进",
@@ -133,29 +137,119 @@ async function postApiWorks(endpointPath, payload) {
 
 function summarizeApiWorks(profile, raw) {
   const mock = buildMockChart(profile);
+  const astroRaw = raw.astro?.data || raw.astro;
+  const baziRaw = raw.bazi?.data || raw.bazi;
+  const ziweiRaw = raw.ziwei?.data || raw.ziwei;
+  const errors = Object.entries(raw.errors || {})
+    .map(([name, message]) => `${name}: ${message}`)
+    .join("；");
 
   return {
     provider: "apiworks",
     source: "ApiWorks 星图",
-    meta: `${mock.meta} · 已通过服务端代理调用`,
+    meta: errors ? `${mock.meta} · 部分接口已返回，失败项：${errors}` : `${mock.meta} · 已通过服务端代理调用`,
     ziwei: {
-      core: raw.ziwei ? "紫微盘：已生成" : mock.ziwei.core,
-      detail: raw.ziwei ? "紫微斗数原始结构已返回，下一步会把宫位、主星、四化映射到可读 UI。" : mock.ziwei.detail
+      core: ziweiRaw ? "紫微盘：已生成" : mock.ziwei.core,
+      detail: ziweiRaw ? "紫微斗数原始结构已返回，下一步会把宫位、主星、四化映射到可读 UI。" : mock.ziwei.detail
     },
     bazi: {
-      core: raw.bazi ? "八字盘：已生成" : mock.bazi.core,
-      detail: raw.bazi ? "八字原始结构已返回，下一步会把四柱、日主、十神、五行强弱映射到可读 UI。" : mock.bazi.detail
+      core: baziRaw ? "八字盘：已生成" : mock.bazi.core,
+      detail: baziRaw ? "八字原始结构已返回，下一步会把四柱、日主、十神、五行强弱映射到可读 UI。" : mock.bazi.detail
     },
     astro: {
-      core: raw.astro ? "星盘：已生成" : mock.astro.core,
-      detail: raw.astro ? "星盘原始结构已返回，下一步会把行星、宫位、相位映射到可读 UI。" : mock.astro.detail
+      core: astroRaw ? buildAstroCore(astroRaw) : mock.astro.core,
+      detail: astroRaw ? "星盘原始结构已返回，下一步会把行星、宫位、相位映射到可读 UI。" : mock.astro.detail,
+      sun: findPlanetSign(astroRaw, ["Sun", "太阳", "0"]),
+      moon: findPlanetSign(astroRaw, ["Moon", "月亮", "1"]),
+      ascendant: findPlanetSign(astroRaw, ["ASC", "Asc", "上升", "10"]) || findAscendantFromHouse(astroRaw),
+      rawState: astroRaw ? "已返回" : "未返回"
     },
     synthesis: {
-      title: "真实排盘已接入，等待解释层映射",
-      text: "服务端已经拿到第三方排盘返回。下一步重点不是继续堆接口，而是把 raw 数据整理成观命自己的 ChartBundle，并接入 AI 本命分析和每日洞察。"
+      title: astroRaw || baziRaw || ziweiRaw ? "真实排盘已接入，等待解释层映射" : mock.synthesis.title,
+      text: astroRaw || baziRaw || ziweiRaw
+        ? "服务端已经拿到第三方排盘返回。下一步重点不是继续堆接口，而是把 raw 数据整理成观命自己的 ChartBundle，并接入 AI 本命分析和每日洞察。"
+        : mock.synthesis.text
     },
-    raw
+    raw: {
+      astro: astroRaw,
+      bazi: baziRaw,
+      ziwei: ziweiRaw,
+      errors: raw.errors || {}
+    }
   };
+}
+
+function buildAstroCore(raw) {
+  const sun = findPlanetSign(raw, ["Sun", "太阳", "0"]);
+  const moon = findPlanetSign(raw, ["Moon", "月亮", "1"]);
+  const ascendant = findPlanetSign(raw, ["ASC", "Asc", "上升", "10"]) || findAscendantFromHouse(raw);
+
+  return `星盘：太阳${sun || "待映射"} · 月亮${moon || "待映射"} · 上升${ascendant || "待映射"}`;
+}
+
+function formatPlanetSign(planet) {
+  const sign = planet.sign?.sign_cn || planet.sign_cn || planet.sign_name;
+  if (!sign) return null;
+  const degree = Number.isFinite(planet.sign?.deg) ? `${planet.sign.deg}°` : "";
+  return `${sign}${degree}`;
+}
+
+function findPlanetSign(raw, aliases) {
+  if (!raw) return null;
+  const planets = Array.isArray(raw.planet) ? raw.planet : [];
+  const matchedPlanet = planets.find((planet) => {
+    const values = [planet.planet_en, planet.planet_cn, planet.planet_name, planet.planet_code].map(String);
+    return aliases.some((alias) => values.includes(alias));
+  });
+
+  if (matchedPlanet) return formatPlanetSign(matchedPlanet);
+
+  const signs = Array.isArray(raw.sign) ? raw.sign : [];
+  for (const sign of signs) {
+    const planetArray = Array.isArray(sign.planet_array) ? sign.planet_array : [];
+    const planet = planetArray.find((item) => {
+      const values = [item.planet_en, item.planet_cn, item.planet_name, item.planet_code].map(String);
+      return aliases.some((alias) => values.includes(alias));
+    });
+    if (planet) return `${sign.sign_cn || sign.sign_name}${Number.isFinite(planet.deg) ? `${planet.deg}°` : ""}`;
+  }
+
+  return null;
+}
+
+function findAscendantFromHouse(raw) {
+  if (!raw) return null;
+  const houses = Array.isArray(raw.house) ? raw.house : [];
+  const firstHouse = houses.find((house) => Number(house.house_id || house.id) === 1) || houses[0];
+  if (!firstHouse) return null;
+  return firstHouse.sign?.sign_cn || firstHouse.sign_cn || firstHouse.sign_name || null;
+}
+
+function findAstroValue(raw, keys) {
+  if (!raw) return "待映射";
+  const text = JSON.stringify(raw);
+
+  for (const key of keys) {
+    const direct = raw[key];
+    if (typeof direct === "string") return direct;
+    if (direct && typeof direct === "object") {
+      return direct.sign || direct.zodiac || direct.name || JSON.stringify(direct).slice(0, 24);
+    }
+
+    const pattern = new RegExp(`"${key}"\\s*:\\s*"([^"]+)"`, "i");
+    const match = text.match(pattern);
+    if (match) return match[1];
+  }
+
+  return "待映射";
+}
+
+async function safePostApiWorks(name, endpointPath, payload) {
+  try {
+    return { name, data: await postApiWorks(endpointPath, payload) };
+  } catch (error) {
+    return { name, error: error.message };
+  }
 }
 
 async function generateChartBundle(profile) {
@@ -164,13 +258,26 @@ async function generateChartBundle(profile) {
   }
 
   const payload = toApiWorksPayload(profile);
-  const [astro, bazi, ziwei] = await Promise.all([
-    postApiWorks(process.env.APIWORKS_CHART_NATAL_PATH || "/chart/natal", payload),
-    postApiWorks(process.env.APIWORKS_BAZI_NATAL_PATH || "/bazi/natal", payload),
-    postApiWorks(process.env.APIWORKS_ZIWEI_NATAL_PATH || "/ziwei/natal", payload)
+  const results = await Promise.all([
+    safePostApiWorks("astro", process.env.APIWORKS_CHART_NATAL_PATH || "/chart/natal", payload),
+    safePostApiWorks("bazi", process.env.APIWORKS_BAZI_NATAL_PATH || "/bazi/natal", payload),
+    safePostApiWorks("ziwei", process.env.APIWORKS_ZIWEI_NATAL_PATH || "/ziwei/natal", payload)
   ]);
+  const raw = { errors: {} };
 
-  return summarizeApiWorks(profile, { astro, bazi, ziwei });
+  results.forEach((result) => {
+    if (result.error) {
+      raw.errors[result.name] = result.error;
+      return;
+    }
+    raw[result.name] = result.data;
+  });
+
+  if (!raw.astro && !raw.bazi && !raw.ziwei) {
+    throw new Error(Object.values(raw.errors).join("；") || "All ApiWorks requests failed");
+  }
+
+  return summarizeApiWorks(profile, raw);
 }
 
 async function handleApi(req, res) {
