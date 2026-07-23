@@ -64,10 +64,12 @@ function activateTab(tabName) {
 }
 
 function buildMockChart(profile) {
+  const sunSign = getSunSign(profile.birthDate);
+
   return {
     provider: "browser-mock",
     source: "AI 原型排盘",
-    meta: `${profile.birthDate} ${profile.birthTime} · ${profile.birthPlace} · ${profile.gender}`,
+    meta: `${profile.birthDate} ${profile.birthTime} · ${profile.birthPlace} · ${profile.gender} · 当前为文件/mock 模式，真实星盘请用 http://localhost:5173`,
     ziwei: {
       core: "命宫：天机坐守 · 身宫在迁移",
       detail: "紫微原型显示你更像观察型谋局者，适合先理解局势、再选择发力点。后续接入真实紫微盘后，这里会展示命宫、身宫、夫妻宫、事业宫与四化信息。"
@@ -77,11 +79,11 @@ function buildMockChart(profile) {
       detail: "八字原型倾向于先建立节律，再释放创造力。当前版本为模拟数据，正式接入后会替换为四柱、藏干、十神、五行强弱和大运流年。"
     },
     astro: {
-      core: "月亮需求：稳定回应 · 金星偏慢热",
-      detail: "星盘先作为辅助心理层，重点服务关系模式与合盘。后续会加入太阳、月亮、上升、金星、火星、七宫与相位。",
-      sun: "狮子座",
-      moon: "金牛座",
-      ascendant: "天秤座",
+      core: `星盘原型：太阳${sunSign}`,
+      detail: "当前没有连接后端 API，只能根据阳历日期估算太阳星座；月亮、上升、宫位和相位必须通过真实星盘 API 计算。",
+      sun: sunSign,
+      moon: "需连接 API",
+      ascendant: "需连接 API",
       rawState: "mock"
     },
     synthesis: {
@@ -89,6 +91,26 @@ function buildMockChart(profile) {
       text: "你的命盘原型不适合被外界节奏推着走。今日最重要的不是多做，而是把目标、边界和情绪顺序排清楚。先完成一个能落地的小行动，再做更大的判断。"
     }
   };
+}
+
+function getSunSign(birthDate) {
+  const [, monthText, dayText] = String(birthDate || "").match(/^(\d{4})-(\d{2})-(\d{2})$/) || [];
+  const month = Number(monthText);
+  const day = Number(dayText);
+
+  if (!month || !day) return "待生成";
+  if ((month === 3 && day >= 21) || (month === 4 && day <= 19)) return "白羊座";
+  if ((month === 4 && day >= 20) || (month === 5 && day <= 20)) return "金牛座";
+  if ((month === 5 && day >= 21) || (month === 6 && day <= 21)) return "双子座";
+  if ((month === 6 && day >= 22) || (month === 7 && day <= 22)) return "巨蟹座";
+  if ((month === 7 && day >= 23) || (month === 8 && day <= 22)) return "狮子座";
+  if ((month === 8 && day >= 23) || (month === 9 && day <= 22)) return "处女座";
+  if ((month === 9 && day >= 23) || (month === 10 && day <= 23)) return "天秤座";
+  if ((month === 10 && day >= 24) || (month === 11 && day <= 22)) return "天蝎座";
+  if ((month === 11 && day >= 23) || (month === 12 && day <= 21)) return "射手座";
+  if ((month === 12 && day >= 22) || (month === 1 && day <= 19)) return "摩羯座";
+  if ((month === 1 && day >= 20) || (month === 2 && day <= 18)) return "水瓶座";
+  return "双鱼座";
 }
 
 function getBirthProfile() {
