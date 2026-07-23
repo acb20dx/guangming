@@ -65,6 +65,7 @@
         <nav class="nav-tabs" aria-label="主要导航">
           <button class="nav-tab active" data-tab="today">今日</button>
           <button class="nav-tab" data-tab="profile">本命</button>
+          <button class="nav-tab" data-tab="charts">盘象</button>
           <button class="nav-tab" data-tab="coach">教练</button>
           <button class="nav-tab" data-tab="settings">资料</button>
         </nav>
@@ -232,6 +233,46 @@
           </div>
         </section>
 
+        <section class="view" id="charts">
+          <div class="section-head">
+            <p class="eyebrow">三盘生成</p>
+            <h2>紫微 · 八字 · 星盘</h2>
+          </div>
+
+          <div class="chart-source">
+            <div>
+              <p class="label">数据来源</p>
+              <strong id="chartSourceTitle">外部排盘服务接入中</strong>
+              <span id="chartSourceMeta">当前为 AI 报告原型，后续可替换为测测或正式排盘 API 返回的数据。</span>
+            </div>
+            <button class="ghost-button" type="button" data-tab-jump="settings">重填资料</button>
+          </div>
+
+          <div class="chart-cards">
+            <article>
+              <p class="label">紫微斗数</p>
+              <h3 id="ziweiCore">命宫：待生成</h3>
+              <p id="ziweiDetail">输入出生信息后，系统会生成命宫、身宫、夫妻宫、事业宫等核心结构。</p>
+            </article>
+            <article>
+              <p class="label">八字命盘</p>
+              <h3 id="baziCore">日主：待生成</h3>
+              <p id="baziDetail">输入出生信息后，系统会生成四柱、日主、五行倾向与当前节律。</p>
+            </article>
+            <article>
+              <p class="label">西洋星盘</p>
+              <h3 id="astroCore">太阳/月亮/上升：待生成</h3>
+              <p id="astroDetail">星盘先作为辅助系统，后续重点用于情感合盘、关系互动和心理模式分析。</p>
+            </article>
+          </div>
+
+          <article class="synthesis-panel">
+            <p class="label">AI 综合解读</p>
+            <h3 id="synthesisTitle">等待命盘底座</h3>
+            <p id="synthesisText">第一版先把产品流程跑通：资料录入、三盘生成、AI 解读、命盘教练。等拿到正式排盘数据后，AI 会基于真实宫位、四柱、星体相位生成更可信的分析。</p>
+          </article>
+        </section>
+
         <section class="view" id="settings">
           <div class="section-head">
             <p class="eyebrow">出生资料</p>
@@ -241,25 +282,25 @@
           <form class="birth-form">
             <label>
               出生日期
-              <input type="date" value="1996-08-18" />
+              <input id="birthDate" type="date" value="1996-08-18" />
             </label>
             <label>
               出生时间
-              <input type="time" value="08:36" />
+              <input id="birthTime" type="time" value="08:36" />
             </label>
             <label>
               出生地点
-              <input type="text" value="上海，中国" />
+              <input id="birthPlace" type="text" value="上海，中国" />
             </label>
             <label>
               性别
-              <select>
+              <select id="birthGender">
                 <option>女</option>
                 <option>男</option>
                 <option>不便透露</option>
               </select>
             </label>
-            <button type="button">生成 AI 报告原型</button>
+            <button id="generateReport" type="button">生成 AI 报告原型</button>
           </form>
         </section>
       </main>

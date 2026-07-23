@@ -519,7 +519,10 @@ p {
 .archetype-panel,
 .profile-list article,
 .chat-panel,
-.birth-form {
+.birth-form,
+.chart-source,
+.chart-cards article,
+.synthesis-panel {
   border: 1px solid var(--line);
   border-radius: 8px;
   background: var(--panel);
@@ -827,7 +830,10 @@ h1 {
 .archetype-panel,
 .profile-list article,
 .chat-panel,
-.birth-form {
+.birth-form,
+.chart-source,
+.chart-cards article,
+.synthesis-panel {
   padding: 24px;
 }
 
@@ -891,6 +897,45 @@ h1 {
   display: grid;
   grid-template-columns: 300px minmax(0, 1fr);
   gap: 18px;
+}
+
+.chart-source {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  gap: 18px;
+  margin-bottom: 18px;
+}
+
+.chart-source strong {
+  display: block;
+  margin: 8px 0;
+  color: var(--gold);
+  font-size: 22px;
+}
+
+.chart-source span {
+  color: var(--muted);
+  line-height: 1.7;
+}
+
+.chart-cards {
+  display: grid;
+  grid-template-columns: repeat(3, minmax(0, 1fr));
+  gap: 18px;
+  margin-bottom: 18px;
+}
+
+.chart-cards h3,
+.synthesis-panel h3 {
+  margin: 12px 0;
+  color: var(--gold);
+}
+
+.chart-cards p,
+.synthesis-panel p {
+  color: var(--muted);
+  line-height: 1.75;
 }
 
 .prompt-bank {
@@ -1054,6 +1099,7 @@ select:focus {
   .daily-grid,
   .profile-layout,
   .coach-layout,
+  .chart-cards,
   .insight-band {
     grid-template-columns: 1fr;
   }
@@ -1140,8 +1186,10 @@ select:focus {
   }
 
   .birth-form,
+  .chart-source,
   .advice-columns {
     grid-template-columns: 1fr;
     flex-direction: column;
+    align-items: stretch;
   }
 }

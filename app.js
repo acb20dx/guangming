@@ -10,6 +10,21 @@ const coachAnswer = document.querySelector("#coachAnswer");
 const bookGate = document.querySelector("#bookGate");
 const openBook = document.querySelector("#openBook");
 const appShell = document.querySelector("#appShell");
+const generateReport = document.querySelector("#generateReport");
+const birthDate = document.querySelector("#birthDate");
+const birthTime = document.querySelector("#birthTime");
+const birthPlace = document.querySelector("#birthPlace");
+const birthGender = document.querySelector("#birthGender");
+const chartSourceTitle = document.querySelector("#chartSourceTitle");
+const chartSourceMeta = document.querySelector("#chartSourceMeta");
+const ziweiCore = document.querySelector("#ziweiCore");
+const ziweiDetail = document.querySelector("#ziweiDetail");
+const baziCore = document.querySelector("#baziCore");
+const baziDetail = document.querySelector("#baziDetail");
+const astroCore = document.querySelector("#astroCore");
+const astroDetail = document.querySelector("#astroDetail");
+const synthesisTitle = document.querySelector("#synthesisTitle");
+const synthesisText = document.querySelector("#synthesisText");
 
 const quotes = [
   "真正的顺势，不是等待命运安排，而是看懂自己此刻该用哪一种力。",
@@ -34,12 +49,18 @@ openBook.addEventListener("click", enterApp);
 
 tabs.forEach((tab) => {
   tab.addEventListener("click", () => {
-    tabs.forEach((item) => item.classList.remove("active"));
-    views.forEach((view) => view.classList.remove("active"));
-    tab.classList.add("active");
-    document.querySelector(`#${tab.dataset.tab}`).classList.add("active");
+    activateTab(tab.dataset.tab);
   });
 });
+
+document.querySelectorAll("[data-tab-jump]").forEach((button) => {
+  button.addEventListener("click", () => activateTab(button.dataset.tabJump));
+});
+
+function activateTab(tabName) {
+  tabs.forEach((item) => item.classList.toggle("active", item.dataset.tab === tabName));
+  views.forEach((view) => view.classList.toggle("active", view.id === tabName));
+}
 
 refreshBtn.addEventListener("click", () => {
   const current = dailyQuote.textContent;
@@ -70,6 +91,56 @@ coachSend.addEventListener("click", answerQuestion);
 coachInput.addEventListener("keydown", (event) => {
   if (event.key === "Enter") answerQuestion();
 });
+
+function buildMockChart(profile) {
+  const place = profile.place || "未知地点";
+  const minute = profile.time || "未知时间";
+
+  return {
+    source: "AI 原型排盘",
+    meta: `${profile.date} ${minute} · ${place} · ${profile.gender}`,
+    ziwei: {
+      core: "命宫：天机坐守 · 身宫在迁移",
+      detail: "紫微原型显示你更像观察型谋局者，适合先理解局势、再选择发力点。后续接入真实紫微盘后，这里会展示命宫、身宫、夫妻宫、事业宫与四化信息。"
+    },
+    bazi: {
+      core: "日主：木气偏显 · 火土为用",
+      detail: "八字原型倾向于先建立节律，再释放创造力。当前版本为模拟数据，正式接入后会替换为四柱、藏干、十神、五行强弱和大运流年。"
+    },
+    astro: {
+      core: "月亮需求：稳定回应 · 金星偏慢热",
+      detail: "星盘先作为辅助心理层，重点服务关系模式与合盘。后续会加入太阳、月亮、上升、金星、火星、七宫与相位。"
+    },
+    synthesis: {
+      title: "三盘共同主题：先安内在，再向外推进",
+      text: "你的命盘原型不适合被外界节奏推着走。今日最重要的不是多做，而是把目标、边界和情绪顺序排清楚。先完成一个能落地的小行动，再做更大的判断。"
+    }
+  };
+}
+
+function generatePrototypeReport() {
+  const profile = {
+    date: birthDate.value || "未填写日期",
+    time: birthTime.value || "未填写时间",
+    place: birthPlace.value.trim() || "未填写地点",
+    gender: birthGender.value
+  };
+  const chart = buildMockChart(profile);
+
+  chartSourceTitle.textContent = chart.source;
+  chartSourceMeta.textContent = `${chart.meta}。测测/正式排盘 API 接入后，这里会显示真实数据来源。`;
+  ziweiCore.textContent = chart.ziwei.core;
+  ziweiDetail.textContent = chart.ziwei.detail;
+  baziCore.textContent = chart.bazi.core;
+  baziDetail.textContent = chart.bazi.detail;
+  astroCore.textContent = chart.astro.core;
+  astroDetail.textContent = chart.astro.detail;
+  synthesisTitle.textContent = chart.synthesis.title;
+  synthesisText.textContent = chart.synthesis.text;
+  activateTab("charts");
+}
+
+generateReport.addEventListener("click", generatePrototypeReport);
 
 const canvas = document.querySelector("#skyCanvas");
 const ctx = canvas.getContext("2d");
