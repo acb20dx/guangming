@@ -27,7 +27,7 @@ function enterApp() {
     appShell.classList.add("ready");
     appShell.removeAttribute("aria-hidden");
     document.body.classList.remove("locked");
-  }, 640);
+  }, 780);
 }
 
 openBook.addEventListener("click", enterApp);
@@ -82,12 +82,12 @@ function resizeCanvas() {
   canvas.style.width = `${window.innerWidth}px`;
   canvas.style.height = `${window.innerHeight}px`;
   ctx.setTransform(ratio, 0, 0, ratio, 0, 0);
-  stars = Array.from({ length: Math.min(110, Math.floor(window.innerWidth / 9)) }, () => ({
+  stars = Array.from({ length: Math.min(140, Math.floor(window.innerWidth / 7)) }, () => ({
     x: Math.random() * window.innerWidth,
     y: Math.random() * window.innerHeight,
-    r: Math.random() * 1.4 + 0.25,
+    r: Math.random() * 1.35 + 0.25,
     a: Math.random() * 0.55 + 0.1,
-    v: Math.random() * 0.14 + 0.03
+    v: Math.random() * 0.18 + 0.03
   }));
 }
 
@@ -96,15 +96,15 @@ function drawSky() {
   ctx.strokeStyle = "rgba(215, 181, 109, 0.045)";
   ctx.lineWidth = 1;
 
-  for (let i = 0; i < 7; i += 1) {
+  for (let i = 0; i < 8; i += 1) {
     ctx.beginPath();
-    ctx.arc(window.innerWidth * 0.72, window.innerHeight * 0.22, 90 + i * 48, 0, Math.PI * 2);
+    ctx.arc(window.innerWidth * 0.5, window.innerHeight * 0.46, 120 + i * 54, 0, Math.PI * 2);
     ctx.stroke();
   }
 
   stars.forEach((star) => {
     star.a += star.v * 0.01;
-    const alpha = 0.18 + Math.abs(Math.sin(star.a)) * 0.5;
+    const alpha = 0.16 + Math.abs(Math.sin(star.a)) * 0.58;
     ctx.beginPath();
     ctx.fillStyle = `rgba(215, 181, 109, ${alpha})`;
     ctx.arc(star.x, star.y, star.r, 0, Math.PI * 2);
