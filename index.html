@@ -314,7 +314,7 @@
 
           <form class="birth-form">
             <label>
-              出生日期
+              出生日期（阳历/公历）
               <div class="date-selects">
                 <select id="birthYear" aria-label="出生年份"></select>
                 <select id="birthMonth" aria-label="出生月份"></select>
@@ -323,10 +323,13 @@
             </label>
             <label>
               出生时间
-              <input id="birthTime" type="time" value="08:36" />
+              <div class="time-selects">
+                <select id="birthHour" aria-label="出生小时"></select>
+                <select id="birthMinute" aria-label="出生分钟"></select>
+              </div>
             </label>
             <label>
-              出生地点
+              出生地点（中国城市）
               <select id="birthPlace">
                 <option value="上海，中国" data-timezone="8" data-longitude="121.4737" data-latitude="31.2304">上海，中国</option>
                 <option value="北京，中国" data-timezone="8" data-longitude="116.4074" data-latitude="39.9042">北京，中国</option>
@@ -334,10 +337,16 @@
                 <option value="深圳，中国" data-timezone="8" data-longitude="114.0579" data-latitude="22.5431">深圳，中国</option>
                 <option value="成都，中国" data-timezone="8" data-longitude="104.0665" data-latitude="30.5728">成都，中国</option>
                 <option value="杭州，中国" data-timezone="8" data-longitude="120.1551" data-latitude="30.2741">杭州，中国</option>
-                <option value="纽约，美国" data-timezone="-5" data-longitude="-74.0060" data-latitude="40.7128">纽约，美国</option>
-                <option value="洛杉矶，美国" data-timezone="-8" data-longitude="-118.2437" data-latitude="34.0522">洛杉矶，美国</option>
-                <option value="伦敦，英国" data-timezone="0" data-longitude="-0.1276" data-latitude="51.5072">伦敦，英国</option>
-                <option value="东京，日本" data-timezone="9" data-longitude="139.6917" data-latitude="35.6895">东京，日本</option>
+                <option value="南京，中国" data-timezone="8" data-longitude="118.7969" data-latitude="32.0603">南京，中国</option>
+                <option value="苏州，中国" data-timezone="8" data-longitude="120.5853" data-latitude="31.2989">苏州，中国</option>
+                <option value="武汉，中国" data-timezone="8" data-longitude="114.3055" data-latitude="30.5928">武汉，中国</option>
+                <option value="西安，中国" data-timezone="8" data-longitude="108.9398" data-latitude="34.3416">西安，中国</option>
+                <option value="重庆，中国" data-timezone="8" data-longitude="106.5516" data-latitude="29.5630">重庆，中国</option>
+                <option value="天津，中国" data-timezone="8" data-longitude="117.3616" data-latitude="39.3434">天津，中国</option>
+                <option value="青岛，中国" data-timezone="8" data-longitude="120.3826" data-latitude="36.0671">青岛，中国</option>
+                <option value="厦门，中国" data-timezone="8" data-longitude="118.0894" data-latitude="24.4798">厦门，中国</option>
+                <option value="长沙，中国" data-timezone="8" data-longitude="112.9388" data-latitude="28.2282">长沙，中国</option>
+                <option value="郑州，中国" data-timezone="8" data-longitude="113.6254" data-latitude="34.7466">郑州，中国</option>
               </select>
             </label>
             <label>

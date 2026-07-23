@@ -14,7 +14,8 @@ const generateReport = document.querySelector("#generateReport");
 const birthYear = document.querySelector("#birthYear");
 const birthMonth = document.querySelector("#birthMonth");
 const birthDay = document.querySelector("#birthDay");
-const birthTime = document.querySelector("#birthTime");
+const birthHour = document.querySelector("#birthHour");
+const birthMinute = document.querySelector("#birthMinute");
 const birthPlace = document.querySelector("#birthPlace");
 const birthTimezone = document.querySelector("#birthTimezone");
 const birthLongitude = document.querySelector("#birthLongitude");
@@ -93,10 +94,12 @@ function buildMockChart(profile) {
 function getBirthProfile() {
   const month = String(birthMonth.value).padStart(2, "0");
   const day = String(birthDay.value).padStart(2, "0");
+  const hour = String(birthHour.value).padStart(2, "0");
+  const minute = String(birthMinute.value).padStart(2, "0");
 
   return {
     birthDate: `${birthYear.value}-${month}-${day}`,
-    birthTime: birthTime.value || "未填写时间",
+    birthTime: `${hour}:${minute}`,
     birthPlace: birthPlace.value || "未填写地点",
     timezone: Number(birthTimezone.value || 8),
     longitude: Number(birthLongitude.value || 121.4737),
@@ -158,9 +161,22 @@ function populateBirthDateSelects() {
   fillSelect(
     birthMonth,
     Array.from({ length: 12 }, (_, index) => index + 1),
+    6
+  );
+  updateBirthDays(1);
+}
+
+function populateBirthTimeSelects() {
+  fillSelect(
+    birthHour,
+    Array.from({ length: 24 }, (_, index) => index),
     8
   );
-  updateBirthDays(18);
+  fillSelect(
+    birthMinute,
+    Array.from({ length: 60 }, (_, index) => index),
+    36
+  );
 }
 
 function updateBirthDays(selectedDay = birthDay.value || 1) {
@@ -261,6 +277,7 @@ birthYear.addEventListener("change", () => updateBirthDays());
 birthMonth.addEventListener("change", () => updateBirthDays());
 birthPlace.addEventListener("change", syncPlaceMeta);
 populateBirthDateSelects();
+populateBirthTimeSelects();
 syncPlaceMeta();
 
 const canvas = document.querySelector("#skyCanvas");

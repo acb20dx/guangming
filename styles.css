@@ -1145,9 +1145,18 @@ select:focus {
   max-width: 840px;
 }
 
-.date-selects {
+.date-selects,
+.time-selects {
   display: grid;
+  gap: 10px;
+}
+
+.date-selects {
   grid-template-columns: 1fr 0.75fr 0.75fr;
+}
+
+.time-selects {
+  grid-template-columns: 1fr 1fr;
   gap: 10px;
 }
 
@@ -1331,6 +1340,7 @@ select:focus {
   .birth-form,
   .chart-source,
   .date-selects,
+  .time-selects,
   .advice-columns {
     grid-template-columns: 1fr;
     flex-direction: column;
