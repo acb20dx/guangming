@@ -65,6 +65,34 @@ BirthProfile -> ChartProvider -> ChartBundle -> AI Report
 
 现在使用 mock 数据模拟外部排盘服务返回。后续只需要替换 `buildMockChart` 逻辑为真实接口调用。
 
+## 当前工程接入状态
+
+项目已经加入服务端代理：
+
+```text
+server.js
+```
+
+前端通过：
+
+```text
+POST /api/charts
+```
+
+请求排盘。服务端根据 `CHART_PROVIDER` 决定使用 mock 还是 ApiWorks。
+
+这样做的原因：
+
+- API 密钥不会暴露在浏览器代码里。
+- 前端只依赖统一的 `ChartBundle`。
+- 后续从 ApiWorks 切到自研排盘，不需要重写 UI。
+
+本地密钥配置参考：
+
+```text
+.env.example
+```
+
 ## 数据结构草案
 
 ```json
@@ -100,4 +128,3 @@ BirthProfile -> ChartProvider -> ChartBundle -> AI Report
   }
 }
 ```
-

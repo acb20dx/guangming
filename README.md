@@ -46,3 +46,24 @@
 dev/software
 ```
 
+## 本地运行
+
+```text
+npm run dev
+```
+
+打开：
+
+```text
+http://localhost:5173
+```
+
+默认使用 mock 排盘数据。要接入 ApiWorks 星图，请复制 `.env.example` 为 `.env`，并设置：
+
+```text
+CHART_PROVIDER=apiworks
+APIWORKS_APP_ID=你的 App ID
+APIWORKS_APP_KEY=你的 App Key
+```
+
+真实密钥只放在本地 `.env`，不要提交到仓库。

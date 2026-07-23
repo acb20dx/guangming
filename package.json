@@ -1,0 +1,12 @@
+{
+  "name": "guanming",
+  "version": "0.1.0",
+  "private": true,
+  "description": "观命 - 紫微、八字、星盘与 AI 命盘教练网页 App",
+  "scripts": {
+    "dev": "node server.js"
+  },
+  "engines": {
+    "node": ">=18"
+  }
+}

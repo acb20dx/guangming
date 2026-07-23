@@ -14,6 +14,9 @@ const generateReport = document.querySelector("#generateReport");
 const birthDate = document.querySelector("#birthDate");
 const birthTime = document.querySelector("#birthTime");
 const birthPlace = document.querySelector("#birthPlace");
+const birthTimezone = document.querySelector("#birthTimezone");
+const birthLongitude = document.querySelector("#birthLongitude");
+const birthLatitude = document.querySelector("#birthLatitude");
 const birthGender = document.querySelector("#birthGender");
 const chartSourceTitle = document.querySelector("#chartSourceTitle");
 const chartSourceMeta = document.querySelector("#chartSourceMeta");
@@ -45,60 +48,16 @@ function enterApp() {
   }, 780);
 }
 
-openBook.addEventListener("click", enterApp);
-
-tabs.forEach((tab) => {
-  tab.addEventListener("click", () => {
-    activateTab(tab.dataset.tab);
-  });
-});
-
-document.querySelectorAll("[data-tab-jump]").forEach((button) => {
-  button.addEventListener("click", () => activateTab(button.dataset.tabJump));
-});
-
 function activateTab(tabName) {
   tabs.forEach((item) => item.classList.toggle("active", item.dataset.tab === tabName));
   views.forEach((view) => view.classList.toggle("active", view.id === tabName));
 }
 
-refreshBtn.addEventListener("click", () => {
-  const current = dailyQuote.textContent;
-  const next = quotes.find((quote) => quote !== current) || quotes[0];
-  dailyQuote.textContent = next;
-});
-
-promptButtons.forEach((button) => {
-  button.addEventListener("click", () => {
-    coachInput.value = button.textContent;
-    coachInput.focus();
-  });
-});
-
-function answerQuestion() {
-  const question = coachInput.value.trim();
-  if (!question) return;
-
-  userQuestion.classList.remove("hidden");
-  coachAnswer.classList.remove("hidden");
-  userQuestion.querySelector("p").textContent = question;
-  coachAnswer.querySelector("p").textContent =
-    "从命盘教练视角看，这个问题先不要急着判断吉凶。你当前更适合把选择拆成两个层面：一是它是否符合你的长期秩序，二是它会不会放大你的内耗模式。今天的建议是先写下最担心的三件事，再标出其中唯一能在本周推进的一步。";
-  coachInput.value = "";
-}
-
-coachSend.addEventListener("click", answerQuestion);
-coachInput.addEventListener("keydown", (event) => {
-  if (event.key === "Enter") answerQuestion();
-});
-
 function buildMockChart(profile) {
-  const place = profile.place || "未知地点";
-  const minute = profile.time || "未知时间";
-
   return {
+    provider: "browser-mock",
     source: "AI 原型排盘",
-    meta: `${profile.date} ${minute} · ${place} · ${profile.gender}`,
+    meta: `${profile.birthDate} ${profile.birthTime} · ${profile.birthPlace} · ${profile.gender}`,
     ziwei: {
       core: "命宫：天机坐守 · 身宫在迁移",
       detail: "紫微原型显示你更像观察型谋局者，适合先理解局势、再选择发力点。后续接入真实紫微盘后，这里会展示命宫、身宫、夫妻宫、事业宫与四化信息。"
@@ -118,17 +77,21 @@ function buildMockChart(profile) {
   };
 }
 
-function generatePrototypeReport() {
-  const profile = {
-    date: birthDate.value || "未填写日期",
-    time: birthTime.value || "未填写时间",
-    place: birthPlace.value.trim() || "未填写地点",
+function getBirthProfile() {
+  return {
+    birthDate: birthDate.value || "未填写日期",
+    birthTime: birthTime.value || "未填写时间",
+    birthPlace: birthPlace.value.trim() || "未填写地点",
+    timezone: Number(birthTimezone.value || 8),
+    longitude: Number(birthLongitude.value || 121.4737),
+    latitude: Number(birthLatitude.value || 31.2304),
     gender: birthGender.value
   };
-  const chart = buildMockChart(profile);
+}
 
+function renderChart(chart) {
   chartSourceTitle.textContent = chart.source;
-  chartSourceMeta.textContent = `${chart.meta}。测测/正式排盘 API 接入后，这里会显示真实数据来源。`;
+  chartSourceMeta.textContent = chart.meta;
   ziweiCore.textContent = chart.ziwei.core;
   ziweiDetail.textContent = chart.ziwei.detail;
   baziCore.textContent = chart.bazi.core;
@@ -140,6 +103,80 @@ function generatePrototypeReport() {
   activateTab("charts");
 }
 
+async function generatePrototypeReport() {
+  const profile = getBirthProfile();
+  generateReport.textContent = "生成中...";
+  generateReport.disabled = true;
+
+  try {
+    if (window.location.protocol === "file:") {
+      renderChart(buildMockChart(profile));
+      return;
+    }
+
+    const response = await fetch("/api/charts", {
+      method: "POST",
+      headers: { "Content-Type": "application/json" },
+      body: JSON.stringify(profile)
+    });
+    const chart = await response.json();
+
+    if (!response.ok) {
+      renderChart(chart.fallback || buildMockChart(profile));
+      chartSourceMeta.textContent += `。接口暂未成功：${chart.error || "未知错误"}`;
+      return;
+    }
+
+    renderChart(chart);
+  } catch (error) {
+    const fallback = buildMockChart(profile);
+    renderChart(fallback);
+    chartSourceMeta.textContent += `。本地服务暂不可用：${error.message}`;
+  } finally {
+    generateReport.textContent = "生成 AI 报告原型";
+    generateReport.disabled = false;
+  }
+}
+
+function answerQuestion() {
+  const question = coachInput.value.trim();
+  if (!question) return;
+
+  userQuestion.classList.remove("hidden");
+  coachAnswer.classList.remove("hidden");
+  userQuestion.querySelector("p").textContent = question;
+  coachAnswer.querySelector("p").textContent =
+    "从命盘教练视角看，这个问题先不要急着判断吉凶。你当前更适合把选择拆成两个层面：一是它是否符合你的长期秩序，二是它会不会放大你的内耗模式。今天的建议是先写下最担心的三件事，再标出其中唯一能在本周推进的一步。";
+  coachInput.value = "";
+}
+
+openBook.addEventListener("click", enterApp);
+
+tabs.forEach((tab) => {
+  tab.addEventListener("click", () => activateTab(tab.dataset.tab));
+});
+
+document.querySelectorAll("[data-tab-jump]").forEach((button) => {
+  button.addEventListener("click", () => activateTab(button.dataset.tabJump));
+});
+
+refreshBtn.addEventListener("click", () => {
+  const current = dailyQuote.textContent;
+  const next = quotes.find((quote) => quote !== current) || quotes[0];
+  dailyQuote.textContent = next;
+});
+
+promptButtons.forEach((button) => {
+  button.addEventListener("click", () => {
+    coachInput.value = button.textContent;
+    coachInput.focus();
+  });
+});
+
+coachSend.addEventListener("click", answerQuestion);
+coachInput.addEventListener("keydown", (event) => {
+  if (event.key === "Enter") answerQuestion();
+});
 generateReport.addEventListener("click", generatePrototypeReport);
 
 const canvas = document.querySelector("#skyCanvas");
